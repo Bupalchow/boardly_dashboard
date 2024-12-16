@@ -1,41 +1,29 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Navbar } from "./components/Navbar";
 import { Sidebar } from "./components/Sidebar";
-import Progress from "./components/Progress";
-import {Calendar} from "./components/Calendar";
-import { ActionCards } from "./components/ActionCards";
-import { RecommendedSection } from "./components/RecommendedSection";
-import { UpcomingEvents } from "./components/UpcomingEvents";
-import { Partners } from "./components/Partners";
-
+import { Home } from "./pages/Home";
+import Subjects from "./pages/Subjects";
+import SubjectContent from "./pages/SubjectContent";
+import PYQList from "./pages/PYQList";
+import ChapterList from "./pages/ChapterList";  
 export default function App() {
   return (
-    <div className="min-h-screen">
-      <Navbar />
-      <div className="ml-16">
-        <Sidebar />
-        <div className="p-6">
-          <div className="flex gap-6">
-            <div className="flex-[3]">
-              <Progress />
-            </div>
-            <div className="flex-1">
-              <Calendar />
-            </div>
-          </div>
-          <div className="mt-6">
-            <ActionCards />
-          </div>
-          <div className="mt-6 flex gap-6">
-            <div className="flex-[2]">
-              <RecommendedSection />
-            </div>
-            <div className="flex-1">
-              <UpcomingEvents />
-            </div>
-          </div>
-          <Partners />
+    <BrowserRouter>
+      <div className="min-h-screen">
+        <Navbar />
+        <div className="ml-16">
+          <Sidebar />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/schedule" element={<Subjects />} />
+            <Route path="/team" element={<div>coming soon</div>} />
+            <Route path="/profile" element={<div>coming soon</div>} />
+            <Route path="/subject/:subject" element={<SubjectContent />} />
+            <Route path="/subject/:subject/pyq" element={<PYQList />} />
+            <Route path="/subject/:subject/chapters" element={<ChapterList />} />
+          </Routes>
         </div>
       </div>
-    </div>
+    </BrowserRouter>
   )
 }
