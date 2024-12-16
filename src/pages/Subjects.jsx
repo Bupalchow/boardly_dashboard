@@ -1,4 +1,4 @@
-import { Button } from "../components/ui/button"
+import { Button } from "../components/ui/Button"
 import physicsIcon from "../assets/physics.svg"
 import chemistryIcon from "../assets/chemisty.svg"
 import mathIcon from "../assets/math.svg"

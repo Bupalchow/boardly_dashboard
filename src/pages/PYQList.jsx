@@ -7,7 +7,7 @@ import { OutlineButton } from "../components/ui/OutlineButton"
 
 const pyqData = [
   {
-    id: "1",
+    id: "2024",
     status: "pending",
     title: "CBSE 2024 PYQ",
     difficulty: "Easy",
@@ -15,7 +15,7 @@ const pyqData = [
     hasVideoSolution: true
   },
   {
-    id: "2",
+    id: "2023",
     status: "completed",
     title: "CBSE 2023 PYQ",
     difficulty: "Medium",
@@ -23,7 +23,7 @@ const pyqData = [
     hasVideoSolution: true
   },
   {
-    id: "3",
+    id: "2022",
     status: "pending",
     title: "CBSE 2022 PYQ",
     difficulty: "Hard",
@@ -44,6 +44,10 @@ export default function PYQList() {
   const navigate = useNavigate()
   const { subject } = useParams()
 
+  const handleTopperSolutionClick = (year) => {
+    navigate(`/subject/${subject}/pyq/${year}/topper-solution`);
+  };
+
   const filteredData = pyqData.filter(item => {
     const matchesFilter = filter === "all" || item.difficulty.toLowerCase() === filter
     const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase())
@@ -52,14 +56,19 @@ export default function PYQList() {
 
   return (
     <div className="max-w-5xl mx-auto p-4 sm:p-6">
-      <div className="flex items-center mb-6">
+      <div className="flex items-center gap-4 mb-8">
         <button 
           onClick={() => navigate(`/subject/${subject}`)}
-          className="p-2 hover:bg-gray-100 rounded-full mr-2"
+          className="p-2 hover:bg-gray-100 rounded-full"
         >
           <FiArrowLeft className="h-5 w-5" />
         </button>
-        <h1 className="text-xl font-semibold">{subject.charAt(0).toUpperCase() + subject.slice(1)}-Previous Year Questions</h1>
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-1">
+            {subject.charAt(0).toUpperCase() + subject.slice(1)}
+          </h1>
+          <h2 className="text-lg text-gray-600">Previous Year Questions</h2>
+        </div>
       </div>
 
       <div className="flex flex-col sm:flex-row justify-between mb-6 gap-4">
@@ -107,7 +116,12 @@ export default function PYQList() {
                   <FiCircle className="h-6 w-6 text-gray-300" />
                 )}
               </div>
-              <div className="col-span-3 md:col-span-2 font-medium">{item.title}</div>
+              <div className="col-span-3 md:col-span-2">
+                <span className="font-medium text-gray-900">
+                  {subject.charAt(0).toUpperCase() + subject.slice(1)}
+                </span>
+                <span className="text-gray-600"> {item.title}</span>
+              </div>
               <div className="hidden md:block">
                 <OutlineButton variant="green">
                   Attempt
@@ -115,7 +129,7 @@ export default function PYQList() {
               </div>
               <div className="hidden md:flex justify-center">
                 <button
-                  onClick={() => {}}
+                  onClick={() => handleTopperSolutionClick(item.id)}
                   className="p-2 hover:bg-gray-100 rounded-full transition-colors"
                   title="View Topper Solution"
                 >
