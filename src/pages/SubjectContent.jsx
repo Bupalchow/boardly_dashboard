@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { Button } from "../components/ui/button";
+import { Button } from "../components/ui/Button";
 import { FiUpload, FiFileText, FiBook, FiHelpCircle } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 
