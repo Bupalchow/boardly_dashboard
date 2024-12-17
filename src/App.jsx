@@ -7,6 +7,8 @@ import SubjectContent from "./pages/SubjectContent";
 import PYQList from "./pages/PYQList";
 import ChapterList from "./pages/ChapterList";  
 import TopperSolution from "./pages/TopperSolution";
+import Communities from "./pages/Communities";
+import MentorBooking from "./components/MentorBooking";
 
 export default function App() {
   return (
@@ -18,8 +20,8 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/schedule" element={<Subjects />} />
-            <Route path="/team" element={<div>coming soon</div>} />
-            <Route path="/profile" element={<div>coming soon</div>} />
+            <Route path="/communities" element={<Communities />} />
+            <Route path="/mentorship" element={<MentorBooking />} />
             <Route path="/subject/:subject" element={<SubjectContent />} />
             <Route path="/subject/:subject/pyq" element={<PYQList />} />
             <Route path="/subject/:subject/chapters" element={<ChapterList />} />

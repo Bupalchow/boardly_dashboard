@@ -7,27 +7,29 @@ import { Partners } from "../components/Partners";
 
 export const Home = () => {
     return (
-      <div className="p-6">
-        <div className="flex gap-6">
-          <div className="flex-[3]">
+      <div className="p-4 md:p-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+          <div className="md:col-span-2">
             <Progress />
           </div>
-          <div className="flex-1">
+          <div>
             <Calendar />
           </div>
         </div>
-        <div className="mt-6">
+        <div className="mt-4 md:mt-6">
           <ActionCards />
         </div>
-        <div className="mt-6 flex gap-6">
-          <div className="flex-[2]">
+        <div className="mt-4 md:mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+          <div className="md:col-span-2">
             <RecommendedSection />
           </div>
-          <div className="flex-1">
+          <div>
             <UpcomingEvents />
           </div>
         </div>
-        <Partners />
+        <div className="mt-4 md:mt-6">
+          <Partners />
+        </div>
       </div>
     );
   };

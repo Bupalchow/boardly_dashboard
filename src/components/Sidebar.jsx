@@ -1,4 +1,5 @@
 import { AiOutlineHome, AiOutlineSchedule, AiOutlineTeam, AiOutlineUser } from 'react-icons/ai';
+import { FaChalkboardTeacher } from "react-icons/fa";
 import { motion } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -24,8 +25,8 @@ export const Sidebar = () => {
     const menuItems = [
         { icon: AiOutlineHome, path: '/' },
         { icon: AiOutlineSchedule, path: '/schedule' },
-        { icon: AiOutlineTeam, path: '/team' },
-        { icon: AiOutlineUser, path: '/profile' },
+        { icon: AiOutlineTeam, path: '/communities' },
+        { icon: FaChalkboardTeacher, path: '/mentorship' },
     ];
 
     return (
