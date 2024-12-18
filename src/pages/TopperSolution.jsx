@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
@@ -6,8 +6,37 @@ import { FiArrowLeft } from 'react-icons/fi';
 const TopperSolution = () => {
   const [showQuestions, setShowQuestions] = useState(true);
   const [expandedId, setExpandedId] = useState(null);
+  const [showVideo, setShowVideo] = useState(false);
+  const [currentVideoUrl, setCurrentVideoUrl] = useState('');
   const { subject, year } = useParams();
   const navigate = useNavigate();
+
+  const isMobile = () => {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  };
+
+  const handleVideoClick = (videoUrl) => {
+    if (isMobile()) {
+      const youtubeAppUrl = videoUrl.replace('https://youtu.be/', 'vnd.youtube://');
+      const youtubePlayStoreUrl = 'https://play.google.com/store/apps/details?id=com.google.android.youtube';
+      const youtubeAppStoreUrl = 'https://apps.apple.com/app/youtube/id544007664';
+
+      window.location.href = youtubeAppUrl;
+      setTimeout(() => {
+        if (document.hidden) {
+          return; 
+        }
+        if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+          window.location.href = youtubeAppStoreUrl;
+        } else if (/Android/i.test(navigator.userAgent)) {
+          window.location.href = youtubePlayStoreUrl;
+        }
+      }, 2500);
+    } else {
+      setCurrentVideoUrl(videoUrl);
+      setShowVideo(true);
+    }
+  };
 
   const questions = [
     {
@@ -19,7 +48,8 @@ const TopperSolution = () => {
         'It is the largest city in France.',
         'Paris is known as the "City of Light".'
       ],
-      hasVideoSolution: true
+      hasVideoSolution: true,
+      videoUrl:'https://youtu.be/dQw4w9WgXcQ?feature=shared'
     },
     {
       id: '02',
@@ -33,6 +63,58 @@ const TopperSolution = () => {
       hasVideoSolution: false
     }
   ];
+
+  const getEmbedUrl = (url) => {
+    try {
+      if (url.includes('youtu.be')) {
+        const id = url.split('youtu.be/')[1].split('?')[0];
+        return `https://www.youtube.com/embed/${id}`;
+      } else if (url.includes('youtube.com')) {
+        const id = url.split('v=')[1].split('&')[0];
+        return `https://www.youtube.com/embed/${id}`;
+      }
+      return url;
+    } catch (error) {
+      console.error('Error parsing YouTube URL:', error);
+      return url;
+    }
+  };
+
+  const VideoPopup = ({ videoUrl, onClose }) => (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ scale: 0.95 }}
+        animate={{ scale: 1 }}
+        exit={{ scale: 0.95 }}
+        className="bg-white rounded-lg p-4 w-full max-w-3xl relative"
+        onClick={e => e.stopPropagation()}
+      >
+        <button 
+          onClick={onClose}
+          className="absolute -top-10 right-0 text-white hover:text-gray-200"
+        >
+          Close
+        </button>
+        <div className="relative pb-[56.25%] h-0">
+          <iframe
+            className="absolute top-0 left-0 w-full h-full"
+            src={getEmbedUrl(videoUrl)}
+            title="YouTube video player"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            referrerPolicy="strict-origin-when-cross-origin"
+          />
+        </div>
+      </motion.div>
+    </motion.div>
+  );
 
   return (
     <div className="max-w-3xl mx-auto p-4 space-y-6 font-sans relative">
@@ -49,23 +131,6 @@ const TopperSolution = () => {
           </h1>
           <h2 className="text-xl text-gray-600 font-medium">Topper Solutions</h2>
         </div>
-      </div>
-
-      <div className="flex items-center space-x-2 border-b pb-4">
-        <label className="relative inline-flex items-center cursor-pointer">
-          <input
-            type="checkbox"
-            className="sr-only peer"
-            checked={showQuestions}
-            onChange={() => setShowQuestions(!showQuestions)}
-          />
-          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer 
-          dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white 
-          after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white 
-          after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 
-          after:transition-all dark:border-gray-600 peer-checked:bg-[#F85B2C]"></div>
-          <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">Show Questions</span>
-        </label>
       </div>
 
       {showQuestions && (
@@ -121,9 +186,12 @@ const TopperSolution = () => {
                       )}
 
                       {item.hasVideoSolution && (
-                        <button className="flex items-center justify-center px-4 py-2 border 
-                        border-[#F85B2C] rounded-md text-sm font-medium text-[#F85B2C] 
-                        bg-white hover:bg-orange-50 focus:outline-none">
+                        <button 
+                          onClick={() => handleVideoClick(item.videoUrl)}
+                          className="flex items-center justify-center px-4 py-2 border 
+                          border-[#F85B2C] rounded-md text-sm font-medium text-[#F85B2C] 
+                          bg-white hover:bg-orange-50 focus:outline-none"
+                        >
                           <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                           </svg>
@@ -138,6 +206,15 @@ const TopperSolution = () => {
           ))}
         </div>
       )}
+
+      <AnimatePresence>
+        {showVideo && (
+          <VideoPopup
+            videoUrl={currentVideoUrl}
+            onClose={() => setShowVideo(false)}
+          />
+        )}
+      </AnimatePresence>
 
       <button className="fixed top-20 right-4 p-2 rounded-full hover:bg-gray-100 focus:outline-none 
       focus:ring-2 focus:ring-offset-2 focus:ring-[#F85B2C] bg-white shadow-md">
