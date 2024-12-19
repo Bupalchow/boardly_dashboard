@@ -38,9 +38,8 @@ const chapterData = {
         { id: 3, content: "Explain the law of conservation of mass.", status: "unanswered" }
       ]
     }
-    // Add more chapters as needed
+   
   }
-  // Add more subjects as needed
 };
 
 const QuestionCard = ({ question, onStatusChange, isActive, onClick }) => {
