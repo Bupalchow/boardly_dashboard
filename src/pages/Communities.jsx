@@ -9,6 +9,7 @@ export default function Communities() {
       icon: Megaphone,
       action: "join",
       delay: 0,
+      whatsappLink: "https://chat.whatsapp.com/"
     },
     {
       title: "Boardly Discussion",
@@ -16,6 +17,7 @@ export default function Communities() {
       icon: MessageCircle,
       action: "join",
       delay: 0.2,
+      whatsappLink: "https://chat.whatsapp.com/"
     },
     {
       title: "Boardly Broadcast",
@@ -23,6 +25,7 @@ export default function Communities() {
       icon: Airplay,
       action: "Explore",
       delay: 0.4,
+      whatsappLink: "https://chat.whatsapp.com/"
     },
   ]
 
@@ -44,12 +47,12 @@ export default function Communities() {
         </motion.h1>
 
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {cards.map((card, index) => (
+          {cards.map((card) => (
             <motion.div
               key={card.title}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: card.delay }}
+              transition={{ duration: 0.3, delay: card.delay }}
               whileHover={{ y: -5 }}
               className="bg-white rounded-3xl p-8 shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:shadow-lg"
             >
@@ -64,13 +67,16 @@ export default function Communities() {
               <h3 className="mb-3 text-xl font-semibold text-gray-800">{card.title}</h3>
               <p className="mb-8 text-gray-600">{card.description}</p>
 
-              <motion.button
+              <motion.a
+                href={card.whatsappLink}
+                target="_blank"
+                rel="noopener noreferrer"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="inline-flex items-center justify-center rounded-full bg-orange-500 px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
               >
                 {card.action.charAt(0).toUpperCase() + card.action.slice(1)}
-              </motion.button>
+              </motion.a>
             </motion.div>
           ))}
         </div>

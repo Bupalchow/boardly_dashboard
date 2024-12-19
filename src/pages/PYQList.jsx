@@ -2,6 +2,7 @@ import { useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { FiArrowLeft, FiCheck, FiCircle, FiEye, FiSearch } from 'react-icons/fi'
 import { FaCirclePlay } from "react-icons/fa6";
+import { motion, AnimatePresence } from "framer-motion"
 
 import { OutlineButton } from "../components/ui/OutlineButton"
 
@@ -12,7 +13,8 @@ const pyqData = [
     title: "CBSE 2024 PYQ",
     difficulty: "Easy",
     hasTopperSolution: true,
-    hasVideoSolution: true
+    hasVideoSolution: true,
+    videoUrl: 'https://youtu.be/dQw4w9WgXcQ?feature=shared' 
   },
   {
     id: "2023",
@@ -20,7 +22,8 @@ const pyqData = [
     title: "CBSE 2023 PYQ",
     difficulty: "Medium",
     hasTopperSolution: true,
-    hasVideoSolution: true
+    hasVideoSolution: true,
+    videoUrl: 'https://youtu.be/dQw4w9WgXcQ?feature=shared' 
   },
   {
     id: "2022",
@@ -28,7 +31,8 @@ const pyqData = [
     title: "CBSE 2022 PYQ",
     difficulty: "Hard",
     hasTopperSolution: true,
-    hasVideoSolution: true
+    hasVideoSolution: true,
+    videoUrl: 'https://youtu.be/dQw4w9WgXcQ?feature=shared' 
   }
 ]
 
@@ -38,14 +42,74 @@ const difficultyColors = {
   Hard: "text-red-500"
 }
 
+const VideoPopup = ({ videoUrl, onClose }) => {
+  const getEmbedUrl = (url) => {
+    try {
+      if (url.includes('youtu.be')) {
+        const id = url.split('youtu.be/')[1].split('?')[0];
+        return `https://www.youtube.com/embed/${id}`;
+      } else if (url.includes('youtube.com')) {
+        const id = url.split('v=')[1].split('&')[0];
+        return `https://www.youtube.com/embed/${id}`;
+      }
+      return url;
+    } catch (error) {
+      console.error('Error parsing YouTube URL:', error);
+      return url;
+    }
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ scale: 0.95 }}
+        animate={{ scale: 1 }}
+        exit={{ scale: 0.95 }}
+        className="bg-white rounded-lg p-4 w-full max-w-3xl relative"
+        onClick={e => e.stopPropagation()}
+      >
+        <button 
+          onClick={onClose}
+          className="absolute -top-10 right-0 text-white hover:text-gray-200"
+        >
+          Close
+        </button>
+        <div className="relative pb-[56.25%] h-0">
+          <iframe
+            className="absolute top-0 left-0 w-full h-full"
+            src={getEmbedUrl(videoUrl)}
+            title="YouTube video player"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+};
+
 export default function PYQList() {
   const [filter, setFilter] = useState("all")
   const [searchQuery, setSearchQuery] = useState("")
+  const [showVideo, setShowVideo] = useState(false);
+  const [currentVideoUrl, setCurrentVideoUrl] = useState('');
   const navigate = useNavigate()
   const { subject } = useParams()
 
   const handleTopperSolutionClick = (year) => {
     navigate(`/subject/${subject}/pyq/${year}/topper-solution`);
+  };
+
+  const handleVideoClick = (videoUrl) => {
+    setCurrentVideoUrl(videoUrl);
+    setShowVideo(true);
   };
 
   const filteredData = pyqData.filter(item => {
@@ -123,7 +187,10 @@ export default function PYQList() {
                 <span className="text-gray-600"> {item.title}</span>
               </div>
               <div className="hidden md:block">
-                <OutlineButton variant="green">
+                <OutlineButton 
+                  variant="green"
+                  onClick={() => navigate(`/subject/${subject}/pyq/${item.id}/attempt`)}
+                >
                   Attempt
                 </OutlineButton>
               </div>
@@ -144,7 +211,7 @@ export default function PYQList() {
               <div className="hidden md:flex justify-center">
                 {item.hasVideoSolution && (
                   <button
-                    onClick={() => {}}
+                    onClick={() => handleVideoClick(item.videoUrl)}
                     className="p-2 hover:bg-gray-100 rounded-full transition-colors"
                     title="Watch Video Solution"
                   >
@@ -156,6 +223,15 @@ export default function PYQList() {
           </div>
         ))}
       </div>
+
+      <AnimatePresence>
+        {showVideo && (
+          <VideoPopup
+            videoUrl={currentVideoUrl}
+            onClose={() => setShowVideo(false)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   )
 }

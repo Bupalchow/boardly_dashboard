@@ -11,8 +11,10 @@ import Communities from "./pages/Communities";
 import MentorBooking from "./components/MentorBooking";
 import LandingPage from "./pages/LandingPage";
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import Attempt from "./pages/Attempt"; 
+import ChapterQuestions from "./pages/ChapterQuestions";
 
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute = ({ children, hideSidebar = false }) => {
   const { isAuthenticated } = useAuth();
   if (!isAuthenticated) {
     return <Navigate to="/landing" />;
@@ -20,8 +22,8 @@ const ProtectedRoute = ({ children }) => {
   return (
     <>
       <Navbar />
-      <div className="ml-16">
-        <Sidebar />
+      <div className={hideSidebar ? "" : "ml-16"}>
+        {!hideSidebar && <Sidebar />}
         {children}
       </div>
     </>
@@ -70,9 +72,19 @@ export default function App() {
                 <ChapterList />
               </ProtectedRoute>
             } />
+            <Route path="/subject/:subject/chapters/:chapterId" element={
+              <ProtectedRoute>
+                <ChapterQuestions />
+              </ProtectedRoute>
+            } />
             <Route path="/subject/:subject/pyq/:year/topper-solution" element={
               <ProtectedRoute>
                 <TopperSolution />
+              </ProtectedRoute>
+            } />
+            <Route path="/subject/:subject/pyq/:year/attempt" element={
+              <ProtectedRoute hideSidebar={true}>
+                <Attempt />
               </ProtectedRoute>
             } />
             <Route path="*" element={<Navigate to="/landing" replace />} />
