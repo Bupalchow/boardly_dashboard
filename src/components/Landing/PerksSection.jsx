@@ -39,7 +39,6 @@ export default function PerksSection() {
   const [activeSection, setActiveSection] = useState(0)
   const [visibleSections, setVisibleSections] = useState(new Set([0]))
   const sectionRefs = useRef([])
-  const lastInViewRef = useRef(0)
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -51,12 +50,11 @@ export default function PerksSection() {
             const newSet = new Set(prev)
             if (entry.isIntersecting) {
               newSet.add(index)
-              lastInViewRef.current = index
               setActiveSection(index)
             } else {
               newSet.delete(index)
-              if (index > lastInViewRef.current) {
-                setActiveSection(lastInViewRef.current)
+              if (newSet.size > 0) {
+                setActiveSection(Math.max(...Array.from(newSet)))
               }
             }
             return newSet
@@ -64,8 +62,8 @@ export default function PerksSection() {
         })
       },
       {
-        threshold: 0.6,
-        rootMargin: "-10% 0px -10% 0px"
+        threshold: [0.3, 0.7], // Multiple thresholds for smoother transitions
+        rootMargin: "-15% 0px -15% 0px"
       }
     )
 
@@ -81,33 +79,23 @@ export default function PerksSection() {
       <h1 className="text-center text-4xl font-bold pt-20 text-[#FF5533]">
         Perks of Joining Us
       </h1>
-      <div className="fixed right-8 top-1/2 -translate-y-1/2 flex flex-col gap-4 z-50">
-        {sections.map((_, index) => (
-          <div
-            key={index}
-            className={`w-2 h-2 rounded-full transition-all duration-300 ${
-              index === activeSection ? 'bg-[#FF5533] h-8' : 'bg-gray-300'
-            }`}
-          />
-        ))}
-      </div>
       <div className="relative">
         {sections.map((section, index) => (
           <div
             key={index}
             ref={(el) => (sectionRefs.current[index] = el)}
-            className="min-h-screen sticky top-0 flex items-center justify-center p-8"
+            className="min-h-screen h-screen sticky top-0 flex items-center justify-center p-8"
           >
             <div 
-              className={`max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center transition-all duration-700
-                ${index === activeSection 
+              className={`max-w-6xl w-full h-[600px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center transition-all duration-1000 ease-in-out bg-white
+                ${visibleSections.has(index)
                   ? 'opacity-100 translate-y-0 scale-100' 
                   : index < activeSection
-                    ? 'opacity-0 -translate-y-full scale-95'
-                    : 'opacity-0 translate-y-full scale-95'
+                    ? 'opacity-0 -translate-y-32 scale-95'
+                    : 'opacity-0 translate-y-32 scale-95'
                 }`}
             >
-              <div className={`space-y-6 ${index % 2 === 0 ? 'lg:order-1' : 'lg:order-2'}`}>
+              <div className={`space-y-6 h-full flex flex-col justify-center ${index % 2 === 0 ? 'lg:order-1' : 'lg:order-2'}`}>
                 <div className="inline-block px-4 py-2 rounded-full bg-blue-50 text-[#4F46E5] text-sm font-medium">
                   {section.tag}
                 </div>
@@ -122,12 +110,12 @@ export default function PerksSection() {
                 </div>
               </div>
               
-              <div className={`${index % 2 === 0 ? 'lg:order-2' : 'lg:order-1'}`}>
-                <div className="bg-gray-50 rounded-2xl p-6 transform hover:scale-105 transition-transform duration-300">
+              <div className={`h-full flex items-center ${index % 2 === 0 ? 'lg:order-2' : 'lg:order-1'}`}>
+                <div className="bg-gray-50 rounded-2xl p-6 transform hover:scale-105 transition-transform duration-300 w-full">
                   <img
                     src={section.image}
                     alt={section.title}
-                    className="rounded-xl w-full h-auto max-h-[400px] object-contain"
+                    className="rounded-xl w-full h-[400px] object-contain"
                   />
                 </div>
               </div>

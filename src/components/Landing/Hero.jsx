@@ -10,7 +10,7 @@ function Counter({ value, label }) {
 
   useEffect(() => {
     const animateCount = () => {
-      const duration = 1000
+      const duration = 2000 // change this if you want to increase the duration of the numbers counting up
       const start = 0
       const end = value
       const increment = end / (duration / 16)
